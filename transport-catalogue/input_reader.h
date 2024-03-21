@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -27,6 +28,18 @@ namespace catalogue {
 
         class InputReader {
         public:
+            InputReader(std::istream& in, TransportCatalogue& catalogue) {
+
+                int base_request_count;
+                in >> base_request_count >> std::ws;
+
+                for (int i = 0; i < base_request_count; ++i) {
+                    std::string line;
+                    getline(in, line);
+                    ParseLine(line);
+                }
+                ApplyCommands(catalogue);
+            }
             /**
              * Парсит строку в структуру CommandDescription и сохраняет результат в commands_
              */

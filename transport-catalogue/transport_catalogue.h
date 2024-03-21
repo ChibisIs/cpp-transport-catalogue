@@ -36,10 +36,10 @@ namespace catalogue {
 	public:
 		//добавление маршрута в базу (Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka)
 								  // (Bus 256: Biryulyovo Zapadnoye > Biryusinka > Biryulyovo Tovarnaya > Biryulyovo Zapadnoye)
-		void AddBus(std::string& name, std::vector<std::string>& stops);
+		void AddBus(const std::string& name, std::vector<std::string>& stops);
 
 		//добавление остановки в базу (Stop X: latitude, longitude)
-		void AddStop(std::string& name, geo::Coordinates& coordinates);
+		void AddStop(const std::string& name, geo::Coordinates& coordinates);
 
 		//поиск маршрута по имени,
 		const Bus* BusInfo(const std::string_view& name);
@@ -49,10 +49,10 @@ namespace catalogue {
 
 		//получение информации о маршруте (Bus X: R stops on route, U unique stops, L route length)
 										//(Bus 256: 4 stops on route, 3 unique stops, 4371.02 route length)
-		const Information Info(std::string_view& name);
+		const Information Info(const std::string_view& name);
 
 		//метод для получения автобусов для остановки
-		std::set<std::string> BusesToStop(std::string name);
+		std::set<std::string> BusesToStop(const std::string name);
 
 
 

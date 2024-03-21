@@ -2,13 +2,13 @@
 
 namespace catalogue {
 
-	void TransportCatalogue::AddStop(std::string& name, geo::Coordinates& coordinates) {
+	void TransportCatalogue::AddStop(const std::string& name, geo::Coordinates& coordinates) {
 		stops_.push_back({ name, std::move(coordinates) });
 		auto& name_str = stops_.back().stop_name;
 		stop_index_.insert({ name_str , &stops_.back() });
 	}
 
-	void TransportCatalogue::AddBus(std::string& name, std::vector<std::string>& stops) {
+	void TransportCatalogue::AddBus(const std::string& name, std::vector<std::string>& stops) {
 		buses_.push_back({ name, std::move(stops) });
 		auto& name_str = buses_.back().bus_name;
 		bus_index_.insert({ name_str , &buses_.back() });
@@ -28,7 +28,7 @@ namespace catalogue {
 		return stop_index_.at(name);
 	}
 
-	const Information TransportCatalogue::Info(std::string_view& name) {
+	const Information TransportCatalogue::Info(const std::string_view& name) {
 		Information information{};
 		if (!BusInfo(name)) throw std::invalid_argument("bus not found");
 
@@ -54,7 +54,7 @@ namespace catalogue {
 		return length;
 	};
 
-	std::set<std::string> TransportCatalogue::BusesToStop(std::string name) {
+	std::set<std::string> TransportCatalogue::BusesToStop(const std::string name) {
 		std::set<std::string> buses;
 		for (auto& s : buses_) {
 			for (auto& t : s.stops) {

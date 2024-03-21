@@ -4,7 +4,8 @@ using namespace std::literals;
 
 namespace catalogue {
     namespace output {
-        void ParseAndPrintStat(TransportCatalogue& tansport_catalogue, std::string_view request,
+
+        void StatReader::ParseAndPrintStat(TransportCatalogue& tansport_catalogue, std::string_view request,
             std::ostream& output) {
             std::string_view command = request.substr(0, request.find_first_of(" "));
             if (command == "Bus")
@@ -41,6 +42,7 @@ namespace catalogue {
                 }
             }
         }
+
     } //    namespace output
 
 } // namespace catalogue

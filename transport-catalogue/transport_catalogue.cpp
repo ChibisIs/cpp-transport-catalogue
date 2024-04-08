@@ -42,17 +42,46 @@ namespace catalogue {
 		}
 		information.unique_stops = unique_stops.size();
 		information.length = AllComputeDistance(stops);
+		information.curvature = GetCurvature(stops);
 
 		return information;
 	}
 
 	double TransportCatalogue::AllComputeDistance(const std::vector<std::string>& stops) {
 		double length = 0.0;
+
 		for (int n = 0; n < stops.size() - 1; n++) {
-			length += ComputeDistance(StopInfo(stops[n])->coord, StopInfo(stops[n + 1])->coord);
+			length += GetDistance(stops[n], stops[n + 1]);
 		}
+
 		return length;
-	};
+	}
+
+	double TransportCatalogue::GetDistance(std::string_view from, std::string_view to)
+	{
+		auto from_ptr = StopInfo(from);
+		auto to_ptr = StopInfo(to);
+		if (distance_index_.count({ from_ptr, to_ptr })) {
+			return distance_index_.at({ from_ptr, to_ptr });
+		}
+		else if (distance_index_.count({ to_ptr, from_ptr })) {
+			return distance_index_.at({ to_ptr, from_ptr });
+		}
+		return 0.;
+	}
+
+	double TransportCatalogue::GetCurvature(const std::vector<std::string>& stops)
+	{
+		double geo = 0.0;
+
+		auto fact = AllComputeDistance(stops);
+		for (int n = 0; n < stops.size() - 1; n++) {
+			geo += ComputeDistance(StopInfo(stops[n])->coord, StopInfo(stops[n + 1])->coord);
+		}
+
+		return fact / geo;
+	}
+
 
 	std::set<std::string> TransportCatalogue::BusesToStop(const std::string name) {
 		std::set<std::string> buses;
@@ -64,5 +93,11 @@ namespace catalogue {
 			}
 		}
 		return buses;
+	}
+	void TransportCatalogue::AddDistanse(std::string_view from, std::string_view to, double distance)
+	{
+		auto from_ptr = StopInfo(from);
+		auto to_ptr = StopInfo(to);
+		distance_index_[{from_ptr, to_ptr}] = distance;
 	}
 } // namespace catalogue

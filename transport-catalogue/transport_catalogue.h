@@ -30,10 +30,18 @@ namespace catalogue {
 		size_t stops;
 		size_t unique_stops;
 		double length;
+		double curvature;
 	};
 
 	class TransportCatalogue {
 	public:
+		struct Hasher {
+			size_t operator()(const std::pair<const Stop*, const Stop*>& points) const {
+				size_t hash_first = std::hash<const void*>{}(points.first);
+				size_t hash_second = std::hash<const void*>{}(points.second);
+				return hash_first + hash_second * 37;
+			}
+		};
 		//добавление маршрута в базу (Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka)
 								  // (Bus 256: Biryulyovo Zapadnoye > Biryusinka > Biryulyovo Tovarnaya > Biryulyovo Zapadnoye)
 		void AddBus(const std::string& name, std::vector<std::string>& stops);
@@ -54,16 +62,23 @@ namespace catalogue {
 		//метод для получения автобусов для остановки
 		std::set<std::string> BusesToStop(const std::string name);
 
-
+		void AddDistanse(std::string_view from, std::string_view to, double distance);
 
 	private:
 		std::deque<Bus> buses_;
 		std::deque<Stop> stops_;
 		std::unordered_map<std::string_view, const Bus*> bus_index_;
 		std::unordered_map<std::string_view, const Stop*> stop_index_;
+		std::unordered_map<std::pair<const Stop*, const Stop*>, double, Hasher> distance_index_;
 
+		//std::hash<const void*>
 		//вспомогательная функция для подсчета общего расстояния маршрута
 		double AllComputeDistance(const std::vector<std::string>& stops);
+
+		double GetDistance(std::string_view from, std::string_view to);
+
+		double GetCurvature(const std::vector<std::string>& stops);
+
 	};
 
 } // namespace catalogue

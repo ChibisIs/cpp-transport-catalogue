@@ -19,8 +19,9 @@ namespace catalogue {
                     auto inf = tansport_catalogue.Info(name);
                     output << "Bus "s << name << ": "s <<
                         inf.stops << " stops on route, " <<
-                        inf.unique_stops << " unique stops, " << std::setprecision(6) <<
-                        inf.length << " route length" << std::endl;
+                        inf.unique_stops << " unique stops, " <<
+                        inf.length << " route length, " << std::setprecision(6) <<
+                        inf.curvature << " curvature" << std::endl;
                 }
             }
             else if (command == "Stop")

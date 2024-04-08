@@ -45,6 +45,8 @@ namespace catalogue {
              */
             void ParseLine(std::string_view line);
 
+            std::vector<std::pair<int, std::string>> ParseDistance(std::string_view str) const;
+
             /**
              * Наполняет данными транспортный справочник, используя команды из commands_
              */
@@ -53,6 +55,6 @@ namespace catalogue {
         private:
             std::vector<CommandDescription> commands_;
         };
-    } //    namespace input
+    } //namespace input
 
 } //namespace catalogue 

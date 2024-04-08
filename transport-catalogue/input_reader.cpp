@@ -21,10 +21,16 @@ namespace catalogue {
             }
 
             auto not_space2 = str.find_first_not_of(' ', comma + 1);
+            auto comma2 = str.find_first_of(',', not_space2);
 
             double lat = std::stod(std::string(str.substr(not_space, comma - not_space)));
-            double lng = std::stod(std::string(str.substr(not_space2)));
-
+            double lng;
+            if (comma2 == str.npos) {
+                lng = std::stod(std::string(str.substr(not_space2)));
+            }
+            else {
+                lng = std::stod(std::string(str.substr(not_space2, comma2 - not_space2)));
+            }
             return { lat, lng };
         }
 
@@ -106,9 +112,27 @@ namespace catalogue {
             }
         }
 
+        std::vector<std::pair<int, std::string>> InputReader::ParseDistance(std::string_view str) const
+        {
+            std::vector<std::pair<int, std::string>> dist;
+            str = str.substr(str.find(",") + 1); // 37.20829, 3900m to Marushkino, 750m to Universam
+            auto str_distance = str.substr(str.find_first_of(",") + 1); // 3900m to Marushkino, 750m to Universam
+            auto comma = str_distance.find(" to ") + 1;
+
+            while (comma != 0) {
+                auto meters = std::stoi(std::string(str_distance.substr(0, str_distance.find_first_of("m"))));
+                auto stop = std::string(str_distance.substr(str_distance.find_first_of("m") + 5,
+                    str_distance.find(",") - str_distance.find_first_of("m") - 5));
+                dist.push_back({ meters, stop });
+                comma = str_distance.find(",") + 1;
+                str_distance = str_distance.substr(str_distance.find_first_of(",") + 1);
+            }
+            return dist;
+        }
+
         void InputReader::ApplyCommands([[maybe_unused]] catalogue::TransportCatalogue& catalogue) const {
 
-            for (auto [c, i, d] : commands_) {
+            for (auto& [c, i, d] : commands_) {
                 if (c == "Bus") {
                     auto stops_to_bus = ParseRoute(d);
                     std::vector<std::string> new_stops;
@@ -122,7 +146,15 @@ namespace catalogue {
                     catalogue.AddStop(i, cootdinates);
                 }
             }
+            for (auto& [c, i, d] : commands_) {
+                if (c == "Stop") {
+                    auto dist = ParseDistance(d);
+                    for (auto& [m, stop] : dist) {
+                        catalogue.AddDistanse(i, stop, m);
+                    }
+                }
+            }
         }
-    } //    namespace input 
+    } //namespace input 
 
 } //namespace catalogue 

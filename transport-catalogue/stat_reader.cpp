@@ -16,12 +16,12 @@ namespace catalogue {
                     output << "Bus "s << name << ": not found"s << std::endl;
                 }
                 else {
-                    auto inf = tansport_catalogue.Info(name);
+                    auto info = tansport_catalogue.GetBusStatistics(name);
                     output << "Bus "s << name << ": "s <<
-                        inf.stops << " stops on route, " <<
-                        inf.unique_stops << " unique stops, " <<
-                        inf.length << " route length, " << std::setprecision(6) <<
-                        inf.curvature << " curvature" << std::endl;
+                        info.stops << " stops on route, " <<
+                        info.unique_stops << " unique stops, " <<
+                        info.length << " route length, " << std::setprecision(6) <<
+                        info.curvature << " curvature" << std::endl;
                 }
             }
             else if (command == "Stop")

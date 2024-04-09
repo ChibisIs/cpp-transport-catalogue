@@ -57,12 +57,12 @@ namespace catalogue {
 
 		//получение информации о маршруте (Bus X: R stops on route, U unique stops, L route length)
 										//(Bus 256: 4 stops on route, 3 unique stops, 4371.02 route length)
-		const Information Info(const std::string_view& name);
+		const Information GetBusStatistics(const std::string_view& name);
 
 		//метод для получения автобусов для остановки
-		std::set<std::string> BusesToStop(const std::string name);
+		std::set<std::string> BusesToStop(const std::string& name);
 
-		void AddDistanse(std::string_view from, std::string_view to, double distance);
+		void AddDistance(std::string_view from, std::string_view to, double distance);
 
 	private:
 		std::deque<Bus> buses_;

@@ -28,12 +28,13 @@ namespace catalogue {
 		return stop_index_.at(name);
 	}
 
-	const Information TransportCatalogue::Info(const std::string_view& name) {
+	const Information TransportCatalogue::GetBusStatistics(const std::string_view& name) {
 		Information information{};
-		if (!BusInfo(name)) throw std::invalid_argument("bus not found");
+		auto bus_info = BusInfo(name);
+		if (!bus_info) throw std::invalid_argument("bus not found");
 
-		information.name = BusInfo(name)->bus_name;
-		auto stops = BusInfo(name)->stops;
+		information.name = bus_info->bus_name;
+		auto stops = bus_info->stops;
 		information.stops = stops.size();
 
 		std::unordered_set<std::string_view> unique_stops;
@@ -83,18 +84,18 @@ namespace catalogue {
 	}
 
 
-	std::set<std::string> TransportCatalogue::BusesToStop(const std::string name) {
+	std::set<std::string> TransportCatalogue::BusesToStop(const std::string& name) {
 		std::set<std::string> buses;
-		for (auto& s : buses_) {
-			for (auto& t : s.stops) {
-				if (t == name) {
-					buses.insert(s.bus_name);
+		for (auto& [n, stops] : buses_) {
+			for (auto& stop : stops) {
+				if (stop == name) {
+					buses.insert(n);
 				}
 			}
 		}
 		return buses;
 	}
-	void TransportCatalogue::AddDistanse(std::string_view from, std::string_view to, double distance)
+	void TransportCatalogue::AddDistance(std::string_view from, std::string_view to, double distance)
 	{
 		auto from_ptr = StopInfo(from);
 		auto to_ptr = StopInfo(to);

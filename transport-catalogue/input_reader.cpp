@@ -150,7 +150,7 @@ namespace catalogue {
                 if (c == "Stop") {
                     auto dist = ParseDistance(d);
                     for (auto& [m, stop] : dist) {
-                        catalogue.AddDistanse(i, stop, m);
+                        catalogue.AddDistance(i, stop, m);
                     }
                 }
             }

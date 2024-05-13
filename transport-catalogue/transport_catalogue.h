@@ -1,41 +1,18 @@
 #pragma once
 
 #include <deque>
+#include <map>
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <map>
 
-#include "geo.h"
+#include "domain.h"
 
 namespace catalogue {
-
-	struct Stop
-	{
-		std::string stop_name;
-		geo::Coordinates coord;
-		std::set<std::string> buses_by_stop;
-	};
-
-	struct Bus
-	{
-		std::string bus_name;
-		std::vector<std::string> stops;
-		bool is_roundtrip;
-	};
-
-	struct Information
-	{
-		std::string_view name;
-		size_t stops;
-		size_t unique_stops;
-		double length;
-		double curvature;
-	};
-
 	class TransportCatalogue {
 	public:
 		struct Hasher {
@@ -45,26 +22,30 @@ namespace catalogue {
 				return hash_first + hash_second * 37;
 			}
 		};
+
 		//добавление маршрута в базу (Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka)
 								  // (Bus 256: Biryulyovo Zapadnoye > Biryusinka > Biryulyovo Tovarnaya > Biryulyovo Zapadnoye)
-		void AddBus(const std::string& name, std::vector<std::string>& stops, bool is_roundtrip);
+		void AddBus(const std::string& name,const std::vector<std::string>& stops, bool is_roundtrip);
 
 		//добавление остановки в базу (Stop X: latitude, longitude)
 		void AddStop(const std::string& name, geo::Coordinates& coordinates);
 
 		//поиск маршрута по имени,
-		const Bus* BusInfo(const std::string_view& name);
+		const Bus* BusInfo(const std::string_view& name) const;
 
 		//поиск остановки по имени,
-		const Stop* StopInfo(const std::string_view& name);
+		const Stop* StopInfo(const std::string_view& name) const;
 
 		void AddDistance(std::string_view from, std::string_view to, double distance);
 
-		double GetDistance(std::string_view from, std::string_view to);
+		double GetDistance(std::string_view from, std::string_view to) const;
 
-		std::map<std::string_view, const Bus*> GetBusIndex() const;
+		// Возвращает информацию о маршруте (запрос Bus)
+		std::optional<Information> GetBusStat(const std::string_view& bus_name) const;
 
-		std::unordered_map<std::string_view, const Stop*> GetStopIndex() const;
+		const std::map<std::string_view, const Bus*> GetBusIndex() const;
+
+		const std::unordered_map<std::string_view, const Stop*> GetStopIndex() const;
 
 	private:
 		std::deque<Bus> buses_;

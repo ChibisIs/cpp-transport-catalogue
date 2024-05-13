@@ -10,8 +10,7 @@ int main() {
 	JsonReader reader(std::cin, catalogue);
 	const auto& sett = reader.FillRenderSettings(reader.GetRenderSettings().AsMap());
 	renderer::MapRenderer renderer(sett);
-	
-	RequestHandler handler(catalogue, renderer);
-reader.ProcessRequest(reader.GetStatRequests(), handler, catalogue);
-
+    
+    RequestHandler handler(catalogue, renderer);
+    handler.ProcessRequest(reader.GetStatRequests());
 }

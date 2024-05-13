@@ -1,12 +1,22 @@
 #pragma once
 
-namespace geo {
+#include <cmath>
 
-struct Coordinates {
-    double lat; // Широта
-    double lng; // Долгота
-};
+namespace catalogue {
+    namespace geo {
 
-double ComputeDistance(Coordinates from, Coordinates to);
+        struct Coordinates {
+            double lat;
+            double lng;
+            bool operator==(const Coordinates& other) const {
+                return lat == other.lat && lng == other.lng;
+            }
+            bool operator!=(const Coordinates& other) const {
+                return !(*this == other);
+            }
+        };
 
-}  // namespace geo
+        double ComputeDistance(Coordinates from, Coordinates to);
+
+    } //namespace geo
+} //namespace catalogue

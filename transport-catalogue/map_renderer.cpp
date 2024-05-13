@@ -7,8 +7,7 @@ bool IsZero(double value)
     }
 }
 
-std::vector<svg::Polyline> renderer::MapRenderer::DrawRoad(std::map<std::string_view, const catalogue::Bus*> bus_index, 
-    std::unordered_map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector)
+std::vector<svg::Polyline> renderer::MapRenderer::DrawRoad(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector)
 {
     std::vector<svg::Polyline> polylines;
     size_t color_num = 0;
@@ -35,7 +34,7 @@ std::vector<svg::Polyline> renderer::MapRenderer::DrawRoad(std::map<std::string_
     return polylines;
 }
 
-std::vector<svg::Text> renderer::MapRenderer::DrawBusName(std::map<std::string_view, const catalogue::Bus*> bus_index, std::unordered_map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector)
+std::vector<svg::Text> renderer::MapRenderer::DrawBusName(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector)
 {
     std::vector<svg::Text> bus_names;
     size_t color_num = 0;
@@ -82,7 +81,7 @@ std::vector<svg::Text> renderer::MapRenderer::DrawBusName(std::map<std::string_v
     return bus_names;
 }
 
-std::vector<svg::Circle> renderer::MapRenderer::DrawStopSymbol(std::map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector) const
+std::vector<svg::Circle> renderer::MapRenderer::DrawStopSymbol(const map_stop_index& stop_index, SphereProjector& sphere_projector) const
 {
     std::vector<svg::Circle> stop_symbol;
     for (const auto& [stop_name, stop_ptr] : stop_index) {
@@ -97,7 +96,7 @@ std::vector<svg::Circle> renderer::MapRenderer::DrawStopSymbol(std::map<std::str
     return stop_symbol;
 }
 
-std::vector<svg::Text> renderer::MapRenderer::DrawStopName(std::map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector) const
+std::vector<svg::Text> renderer::MapRenderer::DrawStopName(const map_stop_index& stop_index, SphereProjector& sphere_projector) const
 {
     std::vector<svg::Text> stop_names;
     svg::Text text;

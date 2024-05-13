@@ -1,10 +1,5 @@
 #pragma once
 
-/*
- * В этом файле вы можете разместить код, отвечающий за визуализацию карты маршрутов в формате SVG.
- * Визуализация маршртутов вам понадобится во второй части итогового проекта.
- * Пока можете оставить файл пустым.
- */
 #include "geo.h"
 #include "svg.h"
 #include "transport_catalogue.h"
@@ -107,6 +102,11 @@ struct RenderSettings {
 
 namespace renderer
 {
+    typedef std::map<std::string_view, const catalogue::Bus*> map_bus_index;
+    typedef std::map<std::string_view, const catalogue::Stop*> map_stop_index;
+    typedef std::unordered_map<std::string_view, const catalogue::Stop*> unordered_map_stop_index;
+
+
     class MapRenderer {
     public:
         MapRenderer(const RenderSettings& render_settings)
@@ -115,10 +115,10 @@ namespace renderer
 
         }
 
-        std::vector<svg::Polyline> DrawRoad(std::map<std::string_view, const catalogue::Bus*> bus_index, std::unordered_map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector);
-        std::vector<svg::Text> DrawBusName(std::map<std::string_view, const catalogue::Bus*> bus_index, std::unordered_map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector);
-        std::vector<svg::Circle> DrawStopSymbol(std::map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector) const;
-        std::vector<svg::Text> DrawStopName(std::map<std::string_view, const catalogue::Stop*> stop_index, SphereProjector& sphere_projector) const;
+        std::vector<svg::Polyline> DrawRoad(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector);
+        std::vector<svg::Text> DrawBusName(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector);
+        std::vector<svg::Circle> DrawStopSymbol(const map_stop_index& stop_index, SphereProjector& sphere_projector) const;
+        std::vector<svg::Text> DrawStopName(const map_stop_index& stop_index, SphereProjector& sphere_projector) const;
 
         svg::Document GetRoadMap(std::map<std::string_view, const catalogue::Bus*> bus_index, std::unordered_map<std::string_view, const catalogue::Stop*> stop_index);
 

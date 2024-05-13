@@ -1,61 +1,4 @@
-/*
- * Здесь можно разместить код наполнения транспортного справочника данными из JSON,
- * а также код обработки запросов к базе и формирование массива ответов в формате JSON
- */
-
 #include "json_reader.h"
-
-void JsonReader::ProcessRequest(const json::Node& requests_, RequestHandler& handler, TransportCatalogue& catalogue) const
-{
-    {
-        json::Array result;
-        for (auto& request : requests_.AsArray()) {
-            const auto& request_map = request.AsMap();
-            const auto& type = request_map.at("type").AsString();
-            json::Dict dict;
-            if (type == "Stop") {
-                const std::string& stop_name = request_map.at("name").AsString();
-                dict["request_id"] = request_map.at("id").AsInt();
-                if (!catalogue.StopInfo(stop_name)) {
-                    dict["error_message"] = json::Node{ static_cast<std::string>("not found") };
-                }
-                else {
-                    json::Array buses;
-                    auto& get_buses_by_stop = handler.GetBusesByStop(stop_name);
-                    for (auto& bus : get_buses_by_stop) {
-                        buses.push_back(bus);
-                    }
-                    dict["buses"] = buses;
-                }
-                result.emplace_back(dict);
-            }
-            if (type == "Bus") {
-                const std::string& route_number = request_map.at("name").AsString();
-                dict["request_id"] = request_map.at("id").AsInt();
-                if (!catalogue.BusInfo(route_number)) {
-                    dict["error_message"] = json::Node{ static_cast<std::string>("not found") };
-                }
-                else {
-                    auto bus_stat = handler.GetBusStat(route_number);
-                    dict["curvature"] = bus_stat->curvature;
-                    dict["route_length"] = bus_stat->length;
-                    dict["stop_count"] = static_cast<int>(bus_stat->stops);
-                    dict["unique_stop_count"] = static_cast<int>(bus_stat->unique_stops);
-                }
-                result.emplace_back(dict);
-            }
-            if (type == "Map") {
-                dict["request_id"] = request_map.at("id").AsInt();
-                std::ostringstream strm;
-                svg::Document map = handler.RenderMap();
-                map.Render(strm);
-                dict["map"] = strm.str();
-                result.emplace_back(dict);
-            }
-        }
-        json::Print(json::Document{ result }, std::cout);
-    }
-}
 
 const json::Node& JsonReader::GetBaseRequests() const {
     return input_.GetRoot().AsMap().at("base_requests");
@@ -76,11 +19,20 @@ void JsonReader::FillCatalogue(catalogue::TransportCatalogue& catalogue) {
         const auto& request_stops_map = request_stops.AsMap();
         const auto& type = request_stops_map.at("type").AsString();
         if (type == "Stop") {
-            auto [name, coord, stop_distances] = FillStop(request_stops_map);
+            auto [name, coord, stop_distances, _] = FillStop(request_stops_map);
             catalogue.AddStop(name, coord);
         }
     }
-    FillStopDistances(catalogue);
+    for (auto& request_stops : arr) {
+        const auto& request_stops_map = request_stops.AsMap();
+        const auto& type = request_stops_map.at("type").AsString();
+        if (type == "Stop") {
+            auto [name, coord, stop_distances, _] = FillStop(request_stops_map);
+            for (auto& [to_name, dist] : stop_distances) {
+                catalogue.AddDistance(name, to_name, dist);
+            }
+        }
+    }
 
     for (auto& request_bus : arr) {
         const auto& request_bus_map = request_bus.AsMap();
@@ -92,7 +44,7 @@ void JsonReader::FillCatalogue(catalogue::TransportCatalogue& catalogue) {
     }
 }
 
-RenderSettings JsonReader::FillRenderSettings(const json::Dict& request_map) const
+renderer::MapRenderer JsonReader::FillRenderSettings(const json::Dict& request_map) const
 {
     RenderSettings settings = {};
     settings.width = request_map.at("width").AsDouble();
@@ -141,34 +93,20 @@ RenderSettings JsonReader::FillRenderSettings(const json::Dict& request_map) con
     return settings;
 }
 
-std::tuple<std::string, geo::Coordinates, std::map<std::string_view, int>> JsonReader::FillStop(const json::Dict& request_map) const
+catalogue::Stop JsonReader::FillStop(const json::Dict& request_map) const
 {
     auto& name = request_map.at("name").AsString();
     geo::Coordinates coord = { request_map.at("latitude").AsDouble(), request_map.at("longitude").AsDouble() };
+
     std::map<std::string_view, int> road_distances;
     auto& stops = request_map.at("road_distances").AsMap();
     for (auto& [stop, dist] : stops) {
         road_distances.emplace(stop, dist.AsInt());
     }
-    return std::make_tuple(name, coord, road_distances);
+    return { name, coord, road_distances, {} };
 }
 
-void JsonReader::FillStopDistances(TransportCatalogue& catalogue) const
-{
-    const auto& array = GetBaseRequests().AsArray();
-    for (auto& request : array) {
-        const auto& request_stops = request.AsMap();
-        const auto& type = request_stops.at("type").AsString();
-        if (type == "Stop") {
-            auto [from_name, coord, distances] = FillStop(request_stops);
-            for (auto& [to_name, dist] : distances) {
-                catalogue.AddDistance(from_name, to_name, dist);
-            }
-        }
-    }
-}
-
-std::tuple<std::string, std::vector<std::string>, bool> JsonReader::FillBus(const json::Dict& request_map) const
+catalogue::Bus JsonReader::FillBus(const json::Dict& request_map) const
 {
     auto& name = request_map.at("name").AsString();
     std::vector<std::string> stops;
@@ -176,5 +114,5 @@ std::tuple<std::string, std::vector<std::string>, bool> JsonReader::FillBus(cons
         stops.push_back(stop.AsString());
     }
     bool is_roundtrip = request_map.at("is_roundtrip").AsBool();
-    return std::make_tuple(name, stops, is_roundtrip);
+    return { name, stops, is_roundtrip };
 }

@@ -7,7 +7,7 @@ bool IsZero(double value)
     }
 }
 
-std::vector<svg::Polyline> renderer::MapRenderer::DrawRoad(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector)
+std::vector<svg::Polyline> renderer::MapRenderer::DrawRoad(const MapBusIndex& bus_index, const UnorderedMapStopIndex& stop_index, SphereProjector& sphere_projector)
 {
     std::vector<svg::Polyline> polylines;
     size_t color_num = 0;
@@ -34,7 +34,7 @@ std::vector<svg::Polyline> renderer::MapRenderer::DrawRoad(const map_bus_index& 
     return polylines;
 }
 
-std::vector<svg::Text> renderer::MapRenderer::DrawBusName(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector)
+std::vector<svg::Text> renderer::MapRenderer::DrawBusName(const MapBusIndex& bus_index, const UnorderedMapStopIndex& stop_index, SphereProjector& sphere_projector)
 {
     std::vector<svg::Text> bus_names;
     size_t color_num = 0;
@@ -81,7 +81,7 @@ std::vector<svg::Text> renderer::MapRenderer::DrawBusName(const map_bus_index& b
     return bus_names;
 }
 
-std::vector<svg::Circle> renderer::MapRenderer::DrawStopSymbol(const map_stop_index& stop_index, SphereProjector& sphere_projector) const
+std::vector<svg::Circle> renderer::MapRenderer::DrawStopSymbol(const MapStopIndex& stop_index, SphereProjector& sphere_projector) const
 {
     std::vector<svg::Circle> stop_symbol;
     for (const auto& [stop_name, stop_ptr] : stop_index) {
@@ -96,7 +96,7 @@ std::vector<svg::Circle> renderer::MapRenderer::DrawStopSymbol(const map_stop_in
     return stop_symbol;
 }
 
-std::vector<svg::Text> renderer::MapRenderer::DrawStopName(const map_stop_index& stop_index, SphereProjector& sphere_projector) const
+std::vector<svg::Text> renderer::MapRenderer::DrawStopName(const MapStopIndex& stop_index, SphereProjector& sphere_projector) const
 {
     std::vector<svg::Text> stop_names;
     svg::Text text;

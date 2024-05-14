@@ -102,9 +102,9 @@ struct RenderSettings {
 
 namespace renderer
 {
-    typedef std::map<std::string_view, const catalogue::Bus*> map_bus_index;
-    typedef std::map<std::string_view, const catalogue::Stop*> map_stop_index;
-    typedef std::unordered_map<std::string_view, const catalogue::Stop*> unordered_map_stop_index;
+    typedef std::map<std::string_view, const catalogue::Bus*> MapBusIndex;
+    typedef std::map<std::string_view, const catalogue::Stop*> MapStopIndex;
+    typedef std::unordered_map<std::string_view, const catalogue::Stop*> UnorderedMapStopIndex;
 
 
     class MapRenderer {
@@ -115,10 +115,10 @@ namespace renderer
 
         }
 
-        std::vector<svg::Polyline> DrawRoad(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector);
-        std::vector<svg::Text> DrawBusName(const map_bus_index& bus_index, const unordered_map_stop_index& stop_index, SphereProjector& sphere_projector);
-        std::vector<svg::Circle> DrawStopSymbol(const map_stop_index& stop_index, SphereProjector& sphere_projector) const;
-        std::vector<svg::Text> DrawStopName(const map_stop_index& stop_index, SphereProjector& sphere_projector) const;
+        std::vector<svg::Polyline> DrawRoad(const MapBusIndex& bus_index, const UnorderedMapStopIndex& stop_index, SphereProjector& sphere_projector);
+        std::vector<svg::Text> DrawBusName(const MapBusIndex& bus_index, const UnorderedMapStopIndex& stop_index, SphereProjector& sphere_projector);
+        std::vector<svg::Circle> DrawStopSymbol(const MapStopIndex& stop_index, SphereProjector& sphere_projector) const;
+        std::vector<svg::Text> DrawStopName(const MapStopIndex& stop_index, SphereProjector& sphere_projector) const;
 
         svg::Document GetRoadMap(std::map<std::string_view, const catalogue::Bus*> bus_index, std::unordered_map<std::string_view, const catalogue::Stop*> stop_index);
 

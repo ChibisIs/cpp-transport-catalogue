@@ -74,9 +74,12 @@ namespace json {
         double AsDouble() const;
         const std::string& AsString() const;
         const Array& AsArray() const;
+        Array& AsArray();
         const Dict& AsMap() const;
+        Dict& AsMap();
 
         const Value& GetValue() const { return value_; }
+        Value& GetValue() { return value_; }
 
         bool operator==(const Node& rhs) const;
         bool operator!=(const Node& rhs) const;

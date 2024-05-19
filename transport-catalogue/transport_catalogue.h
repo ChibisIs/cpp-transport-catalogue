@@ -25,7 +25,7 @@ namespace catalogue {
 
 		//добавление маршрута в базу (Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka)
 								  // (Bus 256: Biryulyovo Zapadnoye > Biryusinka > Biryulyovo Tovarnaya > Biryulyovo Zapadnoye)
-		void AddBus(const std::string& name, const std::vector<std::string>& stops, bool is_roundtrip);
+		void AddBus(const std::string& name,const std::vector<std::string>& stops, bool is_roundtrip);
 
 		//добавление остановки в базу (Stop X: latitude, longitude)
 		void AddStop(const std::string& name, geo::Coordinates& coordinates);
@@ -43,7 +43,7 @@ namespace catalogue {
 		// Возвращает информацию о маршруте (запрос Bus)
 		std::optional<Information> GetBusStat(const std::string_view& bus_name) const;
 
-		const std::map<std::string_view, const Bus*>& GetBusIndex() const;
+		const std::map<std::string_view, const Bus*> GetBusIndex() const;
 
 		const std::unordered_map<std::string_view, const Stop*>& GetStopIndex() const;
 

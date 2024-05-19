@@ -45,7 +45,7 @@ namespace catalogue {
 		return information;
 	}
 
-	void TransportCatalogue::AddBus(const std::string& name, const std::vector<std::string>& stops, bool is_roundtrip) {
+	void TransportCatalogue::AddBus(const std::string& name,const std::vector<std::string>& stops, bool is_roundtrip) {
 		buses_.push_back({ name, stops, is_roundtrip });
 		auto& name_str = buses_.back().bus_name;
 		bus_index_.insert({ name_str , &buses_.back() });
@@ -88,7 +88,7 @@ namespace catalogue {
 		return 0.;
 	}
 
-	const std::map<std::string_view, const Bus*>& TransportCatalogue::GetBusIndex() const
+	const std::map<std::string_view, const Bus*> TransportCatalogue::GetBusIndex() const
 	{
 		std::map<std::string_view, const Bus*> result;
 		for (auto& bus : bus_index_) {

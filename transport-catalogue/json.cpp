@@ -290,7 +290,19 @@ namespace json {
         return std::get<Array>(value_);
     }
 
+    Array& Node::AsArray()
+    {
+        if (!IsArray()) throw std::logic_error("wrong type");
+        return std::get<Array>(value_);
+    }
+
     const Dict& Node::AsMap() const {
+        if (!IsMap()) throw std::logic_error("wrong type");
+        return std::get<Dict>(value_);
+    }
+
+    Dict& Node::AsMap()
+    {
         if (!IsMap()) throw std::logic_error("wrong type");
         return std::get<Dict>(value_);
     }

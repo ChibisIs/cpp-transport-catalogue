@@ -102,6 +102,14 @@ namespace catalogue {
 		return stop_index_;
 	}
 
+	const std::map<std::string_view, const Stop*> TransportCatalogue::GetSortedAllStops() const {
+		std::map<std::string_view, const Stop*> result;
+		for (const auto& stop : stop_index_) {
+			result.emplace(stop);
+		}
+		return result;
+	}
+
 	void TransportCatalogue::AddDistance(std::string_view from, std::string_view to, double distance)
 	{
 		auto from_ptr = StopInfo(from);

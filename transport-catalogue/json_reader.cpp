@@ -13,6 +13,11 @@ const json::Node& JsonReader::GetStatRequests() const {
     return input_.GetRoot().AsMap().at("stat_requests");
 }
 
+const json::Node& JsonReader::GetRoutingSettings() const
+{
+    return input_.GetRoot().AsMap().at("routing_settings");
+}
+
 void JsonReader::FillCatalogue(catalogue::TransportCatalogue& catalogue) {
     const json::Array& arr = GetBaseRequests().AsArray();
     for (auto& request_stops : arr) {
@@ -91,6 +96,12 @@ renderer::MapRenderer JsonReader::FillRenderSettings(const json::Dict& request_m
         else throw std::logic_error("Wrong color palette!");
     }
     return settings;
+}
+
+catalogue::Router JsonReader::FillRoutingSettings(const json::Node& settings) const
+{
+    catalogue::Router routing_settings;
+    return catalogue::Router{ settings.AsMap().at("bus_wait_time").AsInt(), settings.AsMap().at("bus_velocity").AsDouble() };
 }
 
 catalogue::Stop JsonReader::FillStop(const json::Dict& request_map) const

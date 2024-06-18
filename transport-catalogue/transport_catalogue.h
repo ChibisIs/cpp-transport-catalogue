@@ -45,6 +45,8 @@ namespace catalogue {
 
 		const std::map<std::string_view, const Bus*> GetBusIndex() const;
 
+		const std::map<std::string_view, const Stop*> GetSortedAllStops() const;
+
 		const std::unordered_map<std::string_view, const Stop*>& GetStopIndex() const;
 
 	private:

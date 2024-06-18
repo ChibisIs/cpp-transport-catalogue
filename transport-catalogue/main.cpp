@@ -10,7 +10,9 @@ int main() {
 	JsonReader reader(std::cin, catalogue);
 	const auto& sett = reader.FillRenderSettings(reader.GetRenderSettings().AsMap());
 	renderer::MapRenderer renderer(sett);
-    
-    RequestHandler handler(catalogue, renderer);
-    handler.ProcessRequest(reader.GetStatRequests());
+	const auto& routing_settings = reader.FillRoutingSettings(reader.GetRoutingSettings());
+	catalogue::Router router = { routing_settings, catalogue };
+
+	RequestHandler handler(catalogue, renderer, router);
+	handler.ProcessRequest(reader.GetStatRequests());
 }

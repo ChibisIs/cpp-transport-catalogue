@@ -4,7 +4,7 @@
 #include "transport_catalogue.h"
 #include "map_renderer.h"
 #include "json_builder.h"
-
+#include "transport_router.h"
 
 #include <algorithm>
 #include <sstream>
@@ -12,9 +12,10 @@
 
 class RequestHandler {
 public:
-    RequestHandler(catalogue::TransportCatalogue& db, renderer::MapRenderer& renderer)
+    RequestHandler(catalogue::TransportCatalogue& db, renderer::MapRenderer& renderer, catalogue::Router& router)
         : db_(db),
-        renderer_(renderer)
+        renderer_(renderer),
+        router_(router)
     {
 
     }
@@ -29,4 +30,5 @@ public:
 private:
     catalogue::TransportCatalogue& db_;
     renderer::MapRenderer& renderer_;
+    catalogue::Router& router_;
 };

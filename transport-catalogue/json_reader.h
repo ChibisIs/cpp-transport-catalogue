@@ -19,9 +19,12 @@ public:
     const json::Node& GetBaseRequests() const;
     const json::Node& GetRenderSettings() const;
     const json::Node& GetStatRequests() const;
+    const json::Node& GetRoutingSettings() const;
 
     void FillCatalogue(catalogue::TransportCatalogue& catalogue);
     renderer::MapRenderer FillRenderSettings(const json::Dict& request_map) const;
+    catalogue::Router FillRoutingSettings(const json::Node& settings) const;
+
     
 
 private:

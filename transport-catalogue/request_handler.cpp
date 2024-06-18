@@ -68,6 +68,63 @@ void RequestHandler::ProcessRequest(const json::Node& requests_) const
                 .Build();
             result.push_back(dict);
         }
+        if (type == "Route") {
+            const auto id = request_map.at("id").AsInt();
+
+            const std::string_view stop_from = request_map.at("from").AsString();
+            const std::string_view stop_to = request_map.at("to").AsString();
+            const auto& route_info = router_.FindRoute(stop_from, stop_to);
+
+            if (!route_info) {
+                result.push_back(json::Builder{}
+                    .StartDict()
+                    .Key("request_id").Value(id)
+                    .Key("error_message").Value("not found")
+                    .EndDict()
+                    .Build());
+            }
+            else {
+                json::Array items;
+                double total_time = 0.0;
+                items.reserve(route_info.value().edges.size());
+                for (auto& edge_id : route_info.value().edges) {
+                    const graph::Edge<double> edge = router_.GetGraph().GetEdge(edge_id);
+
+                    if (edge.quality == 0) {
+                        items.emplace_back(json::Node(json::Builder{}
+                            .StartDict()
+                            .Key("stop_name").Value(edge.name)
+                            .Key("time").Value(edge.weight)
+                            .Key("type").Value("Wait")
+                            .EndDict()
+                            .Build()));
+
+                        total_time += edge.weight;
+                    }
+                    else {
+                        items.emplace_back(json::Node(json::Builder{}
+                            .StartDict()
+                            .Key("bus").Value(edge.name)
+                            .Key("span_count").Value(static_cast<int>(edge.quality))
+                            .Key("time").Value(edge.weight)
+                            .Key("type").Value("Bus")
+                            .EndDict()
+                            .Build()));
+
+                        total_time += edge.weight;
+                    }
+                }
+
+                result.push_back(json::Builder{}
+                    .StartDict()
+                    .Key("request_id").Value(id)
+                    .Key("total_time").Value(total_time)
+                    .Key("items").Value(items)
+                    .EndDict()
+                    .Build());
+            }
+            
+        }
     }
     json::Print(json::Document{ result }, std::cout);
 }

@@ -87,8 +87,11 @@ void RequestHandler::ProcessRequest(const json::Node& requests_) const
                 json::Array items;
                 double total_time = 0.0;
                 items.reserve(route_info.value().edges.size());
-                for (auto& edge_id : route_info.value().edges) {
-                    const graph::Edge<double> edge = router_.GetGraph().GetEdge(edge_id);
+                const auto& edges = route_info.value().edges;
+
+                for (auto& edge_id : edges) {
+                    
+                    const graph::Edge<double> edge = router_.GetGraphEdge(edge_id);
 
                     if (edge.quality == 0) {
                         items.emplace_back(json::Node(json::Builder{}

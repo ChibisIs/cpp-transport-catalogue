@@ -21,6 +21,7 @@ namespace catalogue {
         stops_id_ = std::move(stops_id);
 
         //
+        double bus_velocity_conv = 100.0 / 6.0;
         for (const auto& info : all_buses) {
             const auto& bus = info.second;
             const auto& stops_list = bus->stops;
@@ -42,13 +43,13 @@ namespace catalogue {
                     stops_graph.AddEdge({ bus->bus_name, j - i,
                                                        stops_id_.at(stop_from->stop_name) + 1,
                                                        stops_id_.at(stop_to->stop_name),
-                                                       static_cast<double>(dist_sum) / (bus_velocity_ * (100.0 / 6.0)) });
+                                                       static_cast<double>(dist_sum) / (bus_velocity_ * bus_velocity_conv) });
 
                     if (!bus->is_roundtrip) {
                         stops_graph.AddEdge({ bus->bus_name, j - i,
                                                            stops_id_.at(stop_to->stop_name) + 1,
                                                            stops_id_.at(stop_from->stop_name),
-                                                           static_cast<double>(dist_sum_inverse) / (bus_velocity_ * (100.0 / 6.0)) });
+                                                           static_cast<double>(dist_sum_inverse) / (bus_velocity_ * bus_velocity_conv) });
                     }
                 }
             }
@@ -65,8 +66,8 @@ namespace catalogue {
         return router_->BuildRoute(stops_id_.at(std::string(stop_from)), stops_id_.at(std::string(stop_to)));
     }
 
-    const graph::DirectedWeightedGraph<double>& Router::GetGraph() const
+    const graph::Edge<double>& Router::GetGraphEdge(graph::EdgeId edge_id) const
     {
-        return graph_;
+        return graph_.GetEdge(edge_id);
     }
 }

@@ -15,7 +15,7 @@ namespace catalogue {
             stops_id[stop_info->stop_name] = vertex_id;
             stops_graph.AddEdge({ stop_info->stop_name, 0,
                                   vertex_id, ++vertex_id,
-                                  static_cast<double>(bus_wait_time_) });
+                                  static_cast<double>(route_settings_.bus_wait_time_) });
             ++vertex_id;
         }
         stops_id_ = std::move(stops_id);
@@ -43,13 +43,13 @@ namespace catalogue {
                     stops_graph.AddEdge({ bus->bus_name, j - i,
                                                        stops_id_.at(stop_from->stop_name) + 1,
                                                        stops_id_.at(stop_to->stop_name),
-                                                       static_cast<double>(dist_sum) / (bus_velocity_ * bus_velocity_conv) });
+                                                       static_cast<double>(dist_sum) / (route_settings_.bus_velocity_ * bus_velocity_conv) });
 
                     if (!bus->is_roundtrip) {
                         stops_graph.AddEdge({ bus->bus_name, j - i,
                                                            stops_id_.at(stop_to->stop_name) + 1,
                                                            stops_id_.at(stop_from->stop_name),
-                                                           static_cast<double>(dist_sum_inverse) / (bus_velocity_ * bus_velocity_conv) });
+                                                           static_cast<double>(dist_sum_inverse) / (route_settings_.bus_velocity_ * bus_velocity_conv) });
                     }
                 }
             }

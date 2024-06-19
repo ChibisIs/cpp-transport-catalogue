@@ -7,19 +7,17 @@
 
 namespace catalogue {
 
+	struct RouteSettings {
+		int bus_wait_time_ = 0;
+		double bus_velocity_ = 0.0;
+	};
+
 	class Router {
 	public:
 		Router() = default;
 
-		Router(const int bus_wait_time, const double bus_velocity)
-			: bus_wait_time_(bus_wait_time)
-			, bus_velocity_(bus_velocity)
-
-		{}
-
-		Router(const Router& settings, const TransportCatalogue& catalogue) {
-			bus_wait_time_ = settings.bus_wait_time_;
-			bus_velocity_ = settings.bus_velocity_;
+		Router(const RouteSettings& route_settings, const TransportCatalogue& catalogue) {
+			route_settings_ = route_settings;
 			BuildGraph(catalogue);
 		}
 
@@ -28,9 +26,7 @@ namespace catalogue {
 		const graph::Edge<double>& GetGraphEdge(graph::EdgeId edge_id) const;
 
 	private:
-
-		int bus_wait_time_ = 0;
-		double bus_velocity_ = 0.0;
+		RouteSettings route_settings_;
 
 		const graph::DirectedWeightedGraph<double>& BuildGraph(const TransportCatalogue& catalogue);
 

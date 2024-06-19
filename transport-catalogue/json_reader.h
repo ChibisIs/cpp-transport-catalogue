@@ -23,7 +23,7 @@ public:
 
     void FillCatalogue(catalogue::TransportCatalogue& catalogue);
     renderer::MapRenderer FillRenderSettings(const json::Dict& request_map) const;
-    catalogue::Router FillRoutingSettings(const json::Node& settings) const;
+    catalogue::RouteSettings FillRoutingSettings(const json::Node& settings) const;
 
     
 

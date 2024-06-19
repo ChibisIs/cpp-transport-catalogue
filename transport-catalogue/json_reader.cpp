@@ -98,10 +98,12 @@ renderer::MapRenderer JsonReader::FillRenderSettings(const json::Dict& request_m
     return settings;
 }
 
-catalogue::Router JsonReader::FillRoutingSettings(const json::Node& settings) const
+catalogue::RouteSettings JsonReader::FillRoutingSettings(const json::Node& settings) const
 {
-    catalogue::Router routing_settings;
-    return catalogue::Router{ settings.AsMap().at("bus_wait_time").AsInt(), settings.AsMap().at("bus_velocity").AsDouble() };
+    catalogue::RouteSettings routing_settings;
+    routing_settings.bus_wait_time_ = settings.AsMap().at("bus_wait_time").AsInt();
+    routing_settings.bus_velocity_ = settings.AsMap().at("bus_velocity").AsDouble();
+    return routing_settings;
 }
 
 catalogue::Stop JsonReader::FillStop(const json::Dict& request_map) const
